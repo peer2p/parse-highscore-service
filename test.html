@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>parse.com highscore service</title>
+	<!-- Bootstrap - Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<!-- Bootstrap - Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Bootstrap - Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<!-- parse platform api -->
+	<script src="//www.parsecdn.com/js/parse-1.6.7.min.js"></script>
+	<!-- HighScoreService client -->
+	<script src="HighScoreService.js"></script>	
+	<style>
+		.glyphicon-spin { -webkit-animation: spin 1000ms infinite linear; animation: spin 1000ms infinite linear; }
+		@-webkit-keyframes spin { 
+			0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+			100% { -webkit-transform: rotate(359deg); transform: rotate(359deg); }
+		}
+		@keyframes spin {
+			0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+			100% { -webkit-transform: rotate(359deg); transform: rotate(359deg); }
+		}
+	</style>
+</head>
+
+<body style="padding-top: 70px;">
+	<!-- navbar -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+  		<div class="container-fluid">
+    		<div class="navbar-header">
+				<a class="navbar-brand" href="#">
+					parse.com highscore service
+				</a>				
+    		</div>
+  		</div>
+	</nav>
+	
+	<div class="container-fluid">
+		
+		<span id="pleaseWait" class="pull-right glyphicon glyphicon-refresh glyphicon-spin" style="display:none; position:absolute; top:50%; left:50%; font-size:60px;"></span>
+		
+		<!-- app panel -->
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Application</h3>
+			</div>
+			<div class="panel-body">	
+				<form  class="form-inline" id="loginForm">    
+					<div class="form-group">
+						<input id="appId" type="text" placeholder="Application ID" class="form-control" onblur="createInstance()">
+					</div>
+					<div class="form-group">
+						<input id="jsKey" type="text" placeholder="JavaScript key" class="form-control" onblur="createInstance()">
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		<!-- player panel -->
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Player</h3>
+			</div>
+			<div class="panel-body">	
+				<form  class="form-inline" id="loginForm">    
+					<div class="form-group">
+						<input id="username" type="text" name="username" placeholder="Username" class="form-control" readonly onfocus="this.removeAttribute('readonly');" onblur="createInstance()">
+					</div>
+					<div class="form-group">
+						<input id="password" type="password" name="password" placeholder="Password" class="form-control">
+					</div>
+					<div class="form-group">
+						<input id="email" type="email" name="email" placeholder="Email" class="form-control">
+					</div>		
+					<div class="pull-right">        
+						<button id="loginUser" type="button" class="btn btn-primary pull-right" style="width:150px;">Create or Login</button>
+					</div>
+				</form>
+			</div>
+		</div>
+			
+		<!-- action panel -->
+		<div class="panel panel-warning" style="display:none;" id="actions">
+			<div class="panel-heading">
+				<h3 class="panel-title">Game Actions</h3>
+			</div>
+			<div class="panel-body">			
+				<!-- score form -->
+				<form class="form-inline">
+					<div class="form-group">
+						<label class="sr-only" for="score">Score</label>
+						<input type="number" class="form-control" id="score" placeholder="Score">
+					</div>
+					<button id="addScore" type="button" class="btn btn-primary btn-sm pull-right" style="width:150px;">Add Score</button>
+				</form>
+				<hr/>
+				<!-- achievement form -->
+				<form class="form-inline">
+					<div class="form-group">
+						<label class="sr-only" for="achievementName">Name</label>
+						<input type="text" class="form-control" id="achievementName" placeholder="Name">
+					</div>
+					<div class="form-group">
+						<label class="sr-only" for="achievementDescription">Description</label>
+						<input type="text" class="form-control" id="achievementDescription" placeholder="Description">
+					</div>
+					<div class="form-group">
+						<label class="sr-only" for="achievementScore">Score</label>
+						<input type="number" class="form-control" id="achievementScore" placeholder="Score">
+					</div>
+					<div class="form-group">
+						<label class="sr-only" for="achievementDetails">Details</label>
+						<textarea id="achievementDetails" class="form-control" rows="1">{}</textarea>
+					</div>
+					<button id="addAchievement" type="button" class="btn btn-primary btn-sm pull-right" style="width:150px;">Add Achievemet</button>
+				</form>
+				<hr/>
+				<form class="form-inline">
+					<div class="form-group">
+						<label for="limit">Leaderboard limit</label>
+						<input type="number" class="form-control" id="limit" placeholder="Score" value="10">
+					</div>
+					<div class="checkbox">
+						<label><input id="centerPlayer" type="checkbox"> Center leaderboard around player</label>
+					</div>
+					<button id="refresh" type="button" class="btn btn-primary btn-sm pull-right" style="width:150px;">Refresh Results</button>
+				</form>
+			</div>
+		</div>
+				
+		<!-- stats panel -->
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">Player Stats</h3>
+			</div>
+			<div class="panel-body">
+				<form class="form-inline">
+					<div class="form-group">
+						<label for="statsPlayer">Player</label>
+						<input type="text" class="form-control" id="statsPlayer" readonly>
+					</div>
+					<div class="form-group">
+						<label for="statsRank">Rank</label>
+						<input type="text" class="form-control" id="statsRank" readonly>
+					</div>
+					<div class="form-group">
+						<label for="statsScore">Score</label>
+						<input type="text" class="form-control" id="statsScore" readonly>
+					</div>
+					<div class="form-group">
+						<label for="statsPlayTime">Time played</label>
+						<input type="text" class="form-control" id="statsPlayTime" readonly>
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		<!-- results panel -->
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">Results</h3>
+			</div>
+			<div class="panel-body">	
+								
+				<!-- LeaderBoard table -->			
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover" id="tableLeaderBoard">
+								<caption>LeaderBoard</caption>
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Name</th>
+										<th>Score</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Achievements table -->	
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover" id="tableAchievements">
+								<caption>Achievements</caption>
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Description</th>
+										<th>Score</th>
+										<th>Details</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>				
+				
+				<!-- json display -->			
+				<form>
+					<div class="form-group">
+						<label for="user">User</label>
+						<textarea id="user" class="form-control" rows="3" readonly></textarea>
+					</div>
+					<div class="form-group">
+						<label for="highScore">High Score</label>
+						<textarea id="highScore" class="form-control" rows="5" readonly></textarea>
+					</div>
+				</form>
+				
+			</div>
+		</div>		
+	</div>	
+
+	<script>
+		$('#appId').val(localStorage.getItem('appId'));
+		$('#jsKey').val(localStorage.getItem('jsKey'));
+		
+		var highScoreService = null;
+		
+		function createInstance(){
+			if ($('#appId').val() && $('#jsKey').val() && $('#username').val()){
+				localStorage.setItem('appId', $('#appId').val());
+				localStorage.setItem('jsKey', $('#jsKey').val());
+				
+				highScoreService = new HighScoreService({
+					appId: $('#appId').val(), 
+					key: $('#jsKey').val(),
+					debug:true,
+					updateUserDetails:function(details, user){
+						highScoreService.logDebug("updateUserDetails called width", details, user);
+						$('#user').text(JSON.stringify(user.toJSON()));
+						$('#statsPlayTime').val(user.get('timePlayed').toHHMMSS());				
+					},
+					updateScoreDetails:function(details, highScore){
+						highScoreService.logDebug("updateScoreDetails called width", details, highScore);
+					}
+				});
+			}
+		}
+					
+		function loginUser(){
+			$('#actions').show();
+			$('#pleaseWait').show();
+			highScoreService.login({username: $('#username').val(), password: $('#password').val(), email: $('#email').val()}, function(user){
+				console.log("Got login callback", user);				
+				$('#user').text(JSON.stringify(user.toJSON()));
+				fetchResults();
+			});	
+		}
+		
+		function addScore(){
+			$('#pleaseWait').show();
+			highScoreService.setScore(parseInt($('#score').val()), true, function(highScore){
+				fetchResults();
+			});	
+		}
+		
+		function addAchievement(){
+			$('#pleaseWait').show();
+			highScoreService.addAchievement($('#achievementName').val(), $('#achievementDescription').val(), parseInt($('#achievementScore').val()), JSON.parse($('#achievementDetails').val()), function(achievement){
+				fetchResults();	
+			});	
+		}
+		
+		function refresh(){	
+			$('#pleaseWait').show();	
+			fetchResults();	
+		}
+		
+		function fetchResults(){			
+			$("#tableLeaderBoard > tbody").html("");
+			$("#tableAchievements > tbody").html("");	
+			highScoreService.getHighScore(function(highScore){		
+				$('#highScore').text(JSON.stringify(highScore.toJSON()));	
+				$('#statsScore').val(highScore.get('score'));
+				$('#statsRank').val(highScore.get('rank'));
+				
+				$('#statsPlayTime').val(highScoreService.getUser().get('timePlayed').toHHMMSS());
+				$('#statsPlayer').val(highScoreService.getUser().get('username'));
+				
+				highScoreService.getLeaderBoard(parseInt($('#limit').val()), $('#centerPlayer').prop("checked"), function(leaderBoard){
+					console.log("Got leaderBoard", leaderBoard);
+					for (var i = 0;i < leaderBoard.length; i++){
+						$('#tableLeaderBoard').append('<tr><td>'+leaderBoard[i].get("rank")+'</td><td>'+leaderBoard[i].get("username")+'</td><td>'+leaderBoard[i].get("score")+'</td></tr>');
+					}
+					highScoreService.getAchievements(function(achievements){
+						console.log("Got achievements", achievements);
+						for (var i = 0;i < achievements.length; i++){	
+							$('#tableAchievements').append('<tr><td>'+achievements[i].get("name")+'</td><td>'+achievements[i].get("description")+'</td><td>'+achievements[i].get("score")+'</td><td>'+JSON.stringify(achievements[i].get("details"))+'</td></tr>');
+						}
+						$('#pleaseWait').hide();
+					});						
+				});	
+			});			
+		}
+		
+		//bind button events
+		$('#loginUser').click(loginUser);
+		$('#addScore').click(addScore);
+		$('#refresh').click(refresh);
+		$('#addAchievement').click(addAchievement);		
+		
+		//prevent browser autofill
+		setTimeout(function(){
+			$('#username').remove('readonly');
+			$('#username').focus();			
+		}, 1000);
+		
+		//time display		
+		Number.prototype.toHHMMSS = function () {
+			var ms = Math.floor(this);			
+			var seconds = ms/1000;
+			hours = Math.floor(seconds / 3600);
+			seconds -= hours*3600;
+			var minutes = Math.floor(seconds / 60);
+			seconds -= minutes*60;		
+			if (hours   < 10) {hours   = "0"+hours;}
+			if (minutes < 10) {minutes = "0"+minutes;}
+			if (seconds < 10) {seconds = "0"+seconds;}
+			return hours+':'+minutes+':'+seconds;
+		}		
+	</script>		
+</body>
+</html>

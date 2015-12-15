@@ -1,0 +1,28 @@
+{
+  "name": "parse-highscore-service",
+  "homepage": "https://github.com/peer2p/parse-highscore-service",
+  "version": "1.0",
+  "authors": [
+    "daniel.peer@gmx.net"
+  ],
+  "description": "Highscore and leaderboard service based on parse.com",
+  "main": "HighScoreService.js",
+  "moduleType": [
+    "globals"
+  ],
+  "ignore": [
+    "test.html",
+    "cloud",
+    "bower_components"
+  ],
+  "keywords": [
+    "game",
+    "highscore",
+    "leaderboard",
+    "achievements"
+  ],
+  "dependencies": {
+    "parse-sdk": "~1.4.2"
+  },
+  "license": "MIT"
+}
