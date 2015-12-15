@@ -1,5 +1,5 @@
 # parse-highscore-service
-JS implementation of a highscore and leaderboard service based on [parse.com](parse.com)
+JS implementation of a highscore and leaderboard service based on [parse.com](http://parse.com)
 
 
 ## Objective
@@ -46,7 +46,7 @@ After that you can choose a user/player name and optionally a password and an em
 If the user does not exist a new user is created, otherwise the existing user is logged in. If you did not specify a password the username is taken as password, which is easy, but less secure.  
 After you logged in a player, a panel with game actions comes up. You can add score and achievments from there. The leaderboard data is refreshed on every action and you can see the most important properties of the player in the player stats panel. If you can add scores and you see the leaderboard your Backend should be ready to go, now let's focus on your game.
 
-[Go to Test App](test.html)
+[Go to Test App](http://peermedia.de/parse-highscore-service/test.html)
 
 ### 5. Integrate highscore service in your game
 
