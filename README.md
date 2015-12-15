@@ -8,7 +8,7 @@ The implementation has no other dependencies than the parse.com api client.
 
 
 ## Description
-The functionality for the highsore service divides in two parts. The first one is the cloud code (```main.js```) which runs as a parse.com application.  
+The functionality for the highscore service divides in two parts. The first one is the cloud code (```main.js```) which runs as a parse.com application.  
 The second one is the HighScoreService class (```HighScoreService.js```) as a client. It connects to the parse backend and handles data via Parse JavaScript SDK.  
 The [parse backend](https://dashboard.parse.com/apps/) gives you some very nice functionality. Just take a look to the analytics section of your app to have an idea about the usage of your game or browse the complete data via core section.
 
@@ -22,7 +22,7 @@ The [parse backend](https://dashboard.parse.com/apps/) gives you some very nice 
 * Store game specific values to the detail objects of user and highscore entities
 
 
-## Getting startet
+## Getting started
 
 ### 1. Create a free account at parse.com
 Go to parse.com [signup page](https://www.parse.com/signup) to create a free account and choose an app name for your games highscore backend.
@@ -44,7 +44,7 @@ You can get the two keys from `parse.com > Applications > Your App > App Setting
 
 After that you can choose a user/player name and optionally a password and an email address and hit _Create or Login_.  
 If the user does not exist a new user is created, otherwise the existing user is logged in. If you did not specify a password the username is taken as password, which is easy, but less secure.  
-After you logged in a player, a panel with game actions comes up. You can add score and achievments from there. The leaderboard data is refreshed on every action and you can see the most important properties of the player in the player stats panel. If you can add scores and you see the leaderboard your Backend should be ready to go, now let's focus on your game.
+After you logged in a player, a panel with game actions comes up. You can add score and achievements from there. The leaderboard data is refreshed on every action and you can see the most important properties of the player in the player stats panel. If you can add scores and you see the leaderboard your Backend should be ready to go, now let's focus on your game.
 
 [Go to Test App](http://peermedia.de/parse-highscore-service/test.html)
 
@@ -80,15 +80,15 @@ var highScoreService = new HighScoreService({
 ```
 
 You have to configure the Application ID (`PARSE_APP_ID`) and the JavaScript key (`PARSE_APP_ID`) so that the your client side game can connect to your backend.  
-You can get the two keys fom `parse.com > Applications > Your App > App Settings > Security & Keys`.  
-If you set the debug property to `true` the servcice will log it's actions to the console.  
+You can get the two keys from `parse.com > Applications > Your App > App Settings > Security & Keys`.  
+If you set the debug property to `true` the service will log it's actions to the console.  
 You can optionally configure callbacks to do your stuff when user is persisted (`updateUserDetails`) or when a highScore object is persisted (`updateScoreDetails`).
 
 
 ### 6. Use highscore service in your game
 
 #### 6.1 Login or create user
-The first call you have to do is the login call, beause everything works on data of the user.
+The first call you have to do is the login call, because everything works on data of the user.
 
 ```
 highScoreService.login({username: 'username', password: 'password', email: 'test@test.com'}, function(user){
