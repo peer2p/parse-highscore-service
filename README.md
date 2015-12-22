@@ -19,7 +19,7 @@ The [parse backend](https://dashboard.parse.com/apps/) gives you some very nice 
 * Track players game time
 * Manage achievements for players
 * Leaderboard
-* Store game specific values to the detail objects of user and highscore entities
+* Store game specific values to the detail objects of achievement and highscore entities
 
 
 ## Getting started
